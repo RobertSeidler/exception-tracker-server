@@ -1,0 +1,15 @@
+div.column-cell {
+    font-weight: bold;
+}
+
+div.registration-cell {
+    border: 1px solid lightgray;
+    padding: 5px;
+}
+
+div.layout-container {
+    --column-count: 4;
+    display: grid;
+    grid-template-columns: repeat(var(--column-count), minmax(max-content, 100%));
+    grid-auto-rows: 2em;
+}
