@@ -57,13 +57,13 @@ async function getSideScaffold(res, sidebarTemplate, sidebarValues, ){
     .catch(err => (console.log(err), res.sendStatus(500)));
 }
 
-function sendResultPage(pageName, req, res, next){
+function sendResultPage(pageName, sidebarTemplate, req, res, next){
   let status = res.locals.content.status;
   let resultContent = res.locals.content;
   let templateFile = res.locals.template;
   Promise.all([
     renderTemplateFile(res, templateFile, resultContent),
-    getSideScaffold(res, undefined, {}),
+    getSideScaffold(res, sidebarTemplate, {}),
   ])
     .then(([contentHtml, sideScaffold]) => {
       renderTemplateFile(res, 'index', {

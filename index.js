@@ -22,22 +22,25 @@ const {
 } = require('./router.js');
 
 class View {
-  constructor(name, path, routeFn){
+  constructor(name, path, routeFn, sidebarTemplate){
     this.name = name;
     this.path = path;
     this.view = routeFn;
+    this.side = sidebarTemplate;
   }
 }
 
 const exceptionsView = new View(
   'Reports', 
   '/retrieve/exc', 
-  showExceptions
+  showExceptions,
+  undefined
 );
 const registrationsView = new View(
   'Registrations', 
   '/retrieve/reg', 
-  showRegistrations
+  showRegistrations,
+  'register/sidebar'
 );
 
 const app = express();
@@ -62,12 +65,12 @@ function startServer(){
       app.get(
         registrationsView.path, 
         registrationsView.view.bind(this, db), 
-        sendResultPage.bind(this, registrationsView.name)
+        sendResultPage.bind(this, registrationsView.name, registrationsView.side)
       );
       app.get(
         exceptionsView.path, 
         exceptionsView.view.bind(this, db), 
-        sendResultPage.bind(this, exceptionsView.name),
+        sendResultPage.bind(this, exceptionsView.name, exceptionsView.side),
       );
 
       app.listen(port, function(){
