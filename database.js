@@ -23,6 +23,37 @@ const createRegistrationsTable = `
   );
 `;
 
+const insertRegStmt = `
+  INSERT INTO Registrations (
+    ApplicationName, 
+    Time, 
+    UserID, 
+    IPAdress
+  ) 
+  VALUES (
+    ?, ?, ?, ?
+  );
+`;
+
+const selectRegistrationColumns = `
+  SELECT 
+    name 
+  FROM 
+    PRAGMA_TABLE_INFO(
+      'Registrations'
+    );
+`;
+
+const selectRegistrations = `
+  SELECT 
+    * 
+  FROM 
+    Registrations
+  WHERE
+    UserToken LIKE '?' AND
+    Application LIKE '?';
+`;
+
 const createExceptionsTable = `
   CREATE TABLE Exceptions (
     ExceptionID INTEGER PRIAMRY KEY, 
@@ -35,18 +66,6 @@ const createExceptionsTable = `
     MessageText TEXT NOT NULL, 
     DataText TEXT, 
     Time TEXT NOT NULL
-  );
-`;
-
-const insertRegStmt = `
-  INSERT INTO Registrations (
-    ApplicationName, 
-    Time, 
-    UserID, 
-    IPAdress
-  ) 
-  VALUES (
-    ?, ?, ?, ?
   );
 `;
 
@@ -65,22 +84,6 @@ const insertExcStmt = `
   );
 `;
 
-const selectRegistrationColumns = `
-  SELECT 
-    name 
-  FROM 
-    PRAGMA_TABLE_INFO(
-      'Registrations'
-    );
-`;
-
-const selectRestrations = `
-  SELECT 
-    * 
-  FROM 
-    Registrations;
-`;
-
 const selectExceptionColumns = `
   SELECT 
     name
@@ -94,7 +97,11 @@ const seletExceptions = `
   SELECT
     *
   FROM
-    Exceptions;
+    Exceptions
+  WHERE
+    UserID LIKE '?' AND
+    ApplicationName LIKE '?';
+  ;
 `;
 
 async function createDatabase(dbPath){
@@ -132,9 +139,9 @@ async function provideDatabase(){
 module.exports = {
   provideDatabase,
   insertRegStmt,
-  insertExcStmt,
   selectRegistrationColumns,
-  selectRestrations,
+  selectRegistrations,
+  insertExcStmt,
   selectExceptionColumns,
   seletExceptions,
 
