@@ -1,6 +1,40 @@
 <ul class="sidemenu">
-    <li class="sideitem sideitem1"><a href="#mode=1">mode 1</a></li>
-    <li class="sideitem sideitem2"><a href="#mode=2">mode 2</a></li>
-    <li class="sideitem sideitem3"><a href="#mode=3">mode 3</a></li>
-    <li class="sideitem sideitem4"><a href="#mode=4">mode 4</a></li>
+    <li class="sideitem forusertoken">
+        <ul class="userfilter">
+            {{useritems}}
+        </ul>
+    </li>
+    <li class="sideitem forapplication">
+        <ul class="appfilter">
+            {{appitems}}
+        </ul>
+    </li>
 </ul>
+<script>
+    function addUriParameter(param, value){
+        let uri = new URL(location.href);
+        let searchParams = uri.searchParams;
+        searchParams.set(param, value);
+        return uri.origin + uri.pathname + '?' + searchParams.toString();
+    }
+
+    function onAnchorClick(context){
+        let uri = new URL(location.href);
+        let searchParams = uri.searchParams;
+        if(searchParams.get(context) === anchor.innerText){
+            searchParams.delete(context);
+        } else {
+            searchParams.set(context, anchor.innerText);
+        }
+        location.href = uri.origin + uri.pathname + '?' + searchParams.toString();
+    }
+
+    document.querySelectorAll('ul.userfilter > li > a').forEach(
+        anchor => anchor.addEventListener('click', onAnchorClick.bind(this, 'user'))
+    );
+
+    document.querySelectorAll('ul.appfilter > li > a').forEach(
+        anchor => anchor.addEventListener('click', onAnchorClick.bind(this, 'app'))
+    );
+    
+</script>

@@ -141,6 +141,8 @@ function displayColumns(template, res, next, [columnNames, dataRows]) {
   next();
 }
 
+
+
 function showRegistrations(db, req, res, next){
   let userToken = req.query.user || '%';
   let application = req.query.app || '%';

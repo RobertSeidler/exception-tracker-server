@@ -46,17 +46,21 @@ const selectRegistrationColumns = `
 
 const selectRegistrations = `
   SELECT 
-    * 
+    RegisterID,
+    ApplicationName, 
+    Time, 
+    UserID, 
+    IPAdress
   FROM 
     Registrations
   WHERE
-    UserToken LIKE '?' AND
-    Application LIKE '?';
+    UserID LIKE ? AND
+    ApplicationName LIKE ?;
 `;
 
 const createExceptionsTable = `
   CREATE TABLE Exceptions (
-    ExceptionID INTEGER PRIAMRY KEY, 
+    ExceptionID INTEGER PRIMARY KEY, 
     ApplicationName TEXT NOT NULL, 
     Severity TEXT NOT NULL CHECK(
       Severity IN ('log', 'warn', 'error')
@@ -95,12 +99,19 @@ const selectExceptionColumns = `
 
 const seletExceptions = `
   SELECT
-    *
+    ExceptionID,
+    ApplicationName, 
+    Severity, 
+    UserToken, 
+    UserIP, 
+    MessageText, 
+    DataText, 
+    Time
   FROM
     Exceptions
   WHERE
-    UserID LIKE '?' AND
-    ApplicationName LIKE '?';
+    UserToken LIKE ? AND
+    ApplicationName LIKE ?;
   ;
 `;
 

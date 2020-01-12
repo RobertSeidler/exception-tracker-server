@@ -27,6 +27,7 @@ class View {
     this.path = path;
     this.view = routeFn;
     this.side = sidebarTemplate;
+    this.sideValues = {}
   }
 }
 
