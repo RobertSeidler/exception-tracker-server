@@ -12,9 +12,10 @@ const readFilePromise = util.promisify(require('fs').readFile);
 
 const {
   insertRegStmt, 
-  insertExcStmt,
   selectRegistrationColumns,
-  selectRestrations,
+  selectRegistrations,
+  selectRegistrationsForApplication,
+  insertExcStmt,
   selectExceptionColumns,
   seletExceptions,
 } = require('./database.js');
@@ -141,21 +142,25 @@ function displayColumns(template, res, next, [columnNames, dataRows]) {
 }
 
 function showRegistrations(db, req, res, next){
+  let userToken = req.query.user || '%';
+  let application = req.query.app || '%';
   Promise.all([
     db.all(selectRegistrationColumns), 
-    db.all(selectRestrations)
+    db.all(selectRegistrations, [userToken, application])
   ])
     .then(displayColumns.bind(this, showRegistrationsTemplate, res, next))
     .catch(handleGetError.bind(this, res, next));
 }
 
 function showExceptions(db, req, res, next){
+  let userToken = req.query.user || '%';
+  let application = req.query.app || '%';
   Promise.all([
     db.all(selectExceptionColumns),
-    db.all(seletExceptions)
+    db.all(seletExceptions, [userToken, application])
   ])
     .then(displayColumns.bind(this, showExeptionsTemaplate, res, next))
-    .catch(handleGetError.bind(this, res, next))
+    .catch(handleGetError.bind(this, res, next));
 }
 
 module.exports = {
