@@ -3,6 +3,7 @@ const dbPath = 'db.sqlite';
 const exitCodes = require('./error.js').exitCodes;
 const errMsg = require('./error.js').errorMessages;
 
+const util = require('util');
 const sqlite = require('sqlite');
 const fAccess = util.promisify(require('fs').access);
 
@@ -27,15 +28,13 @@ const createExceptionsTable = `
     ExceptionID INTEGER PRIAMRY KEY, 
     ApplicationName TEXT NOT NULL, 
     Severity TEXT NOT NULL CHECK(
-      Severity = 'log' OR 
-      Severity = 'warning' OR 
-      Severity = 'error'
+      Severity IN ('log', 'warn', 'error')
     ), 
     UserToken TEXT, 
     UserIP TEXT, 
     MessageText TEXT NOT NULL, 
     DataText TEXT, 
-    Time TEXT
+    Time TEXT NOT NULL
   );
 `;
 
@@ -84,7 +83,7 @@ const selectRestrations = `
 
 const selectExceptionColumns = `
   SELECT 
-    names
+    name
   FROM
     PRAGMA_TABLE_INFO(
       'Exceptions'

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        button {
+            margin: 10px;
+            margin-left: 30%;
+            margin-right: 30%;
+            padding: 10px;
+            padding-left: 5%;
+            padding-right: 5%;
+            width: 30%;
+            font-size: 2em;
+        }
+
+        button.b1 {
+            background-color: lightgrey;
+        }
+
+        button.b2 {
+            background-color: yellow;
+        }
+
+        button.b3 {
+            background-color: lightcoral;
+        }
+
+        button.b4 {
+            background-color: lightgreen;
+        }
+    </style>
+    <script src="./tracker.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            Tracker.injectConsole('http://localhost:52005', 'testapp');
+
+            let buttons = document.querySelectorAll('button');
+
+            buttons.forEach((button, index) => {
+                button.addEventListener('click', function(){
+                    if( index === 0 ){
+                        console.log('Button press worked.');
+                    } else if( index === 1 ) {
+                        console.warn('Warning: A Button was pressed.', button.innerText);
+                    } else if( index === 2 ) {
+                        console.error('Error button was pressed.', new Error('Error button pressed.'));
+                    } else if( index === 3 ) {
+                        console.tracker.sendReport('wrong', 'wrong button was pressed.');
+                    }
+                })
+            })
+        });
+        
+    </script>
+</head>
+<body>
+    <button class="b1">log button</button>
+    <button class="b2">warn button</button>
+    <button class="b3">error button</button>
+    <button class="b4">wrong button</button>
+</body>
+</html>

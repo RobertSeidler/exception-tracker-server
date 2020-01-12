@@ -1,0 +1,73 @@
+body {
+    display: grid;
+    grid-template-rows: 2em 1fr 2em;
+    grid-template-columns: 200px 1fr;
+    height: 1000px;
+}
+
+header#sideheader {
+    grid-area: 1 / 1 / span 1 / span 2;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: max-content;
+    background-color: #EEEEEE;
+    z-index: 100;
+    border-bottom: 1px solid #DDDDDD;
+}
+
+header#sideheader > section#logo {
+    position: relative;
+    top: 0px;
+    padding: 10px 25px;
+    width: 20%;
+    float: left;
+    margin: 0px;
+}
+
+header#sideheader > div#navbar {
+    position: relative;
+    top: 0px;
+    float: right;
+    width: 70%;
+    margin: 0px;
+}
+
+header#sideheader > div#navbar > ul#navmenu {
+    display: grid;
+    position: relative;
+    grid-template-rows: 100%;
+    grid-template-columns: repeat(4, 1fr);
+
+}
+
+header#sideheader > div#navbar > ul#navmenu > li {
+    list-style: none;
+    padding: 0;
+    float: right;
+    margin-right: 10px;
+    text-align: end;
+}
+
+div#sidebar {
+    grid-area: 2 / 1 / span 1 / span 1;
+    background-color: #DDDDDD;
+    /* margin-bottom: 2em; */
+}
+
+div#sidecontent {
+    grid-area: 2 / 2 / span 1 / span 1;
+    margin: 10px;
+    /* margin-bottom: 2em; */
+}
+
+footer#sidefooter {
+    grid-area: 3 / 1 / span 1 / span 2;
+    position: sticky;
+    bottom: 0px;
+    left: 0px;
+    height: 2em;
+    background-color: #EEEEEE;
+    border-top: 1px solid rgb(150, 138, 138);
+}
