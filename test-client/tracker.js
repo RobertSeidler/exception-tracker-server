@@ -8,7 +8,7 @@ const reportPath = 'report';
 const contentTypeHeader = {'Content-Type': 'application/json'};
 
 function createUserToken(){
-  return [...Array(32)].map(() => Math.floor(Math.random() * 10)).join('');
+  return [...Array(16)].map(() => Math.floor(Math.random() * 10)).join('');
 }
 
 function loadUserToken(){
@@ -20,8 +20,8 @@ function loadUserToken(){
   return userToken;
 }
 
-function handleRequest(uri, opts){
-  fetch(uri, opts)
+async function handleRequest(uri, opts){
+  return fetch(uri, opts)
     .then(response => {
       if(response.status >= 200 || response.status < 300){
         logConsole(response.status, response.statusText);
@@ -75,21 +75,43 @@ class Tracker {
     this.registerClient()
   }
 
-  static injectConsole(uri, app){
+  /**
+   * Inject a new Tracker object into console global. The tracker for an application, app, is accessable via console.tracker[app].
+   * 
+   * @param {string} uri Exception-tracker-Server uri in the Form 'proto://my.server.address.com:port/'.
+   * @param {string} app a name under which the Reports are filed in the server.
+   * @param {boolean} injectLog if console.log should send the logs automatically.
+   * @param {boolean} injectWarn if console.log should send the logs automatically.
+   * @param {boolean} injectError if console.log should send the logs automatically.
+   */
+  static injectConsole(uri, app, injectLog = true, injectWarn = true, injectError = true){
     let tracker = new Tracker(uri, app);
-    console.tracker = tracker;
-    console.log = function(message, data, ...additionalArgs){
-      tracker.sendReport('log', message, data);
-      logConsole(message, data, ...additionalArgs);
-    };
-    console.warn = function(message, data, ...additionalArgs){
-      tracker.sendReport('warn', message, data);
-      warnConsole(message, data, ...additionalArgs);
-    };
-    console.error = function(message, data, ...additionalArgs){
-      tracker.sendReport('error', message, data);
-      errorConsole(message, data, ...additionalArgs);
+    if(!console.tracker) console.tracker = {};
+    console.tracker[app] = tracker;
+
+    if(injectLog){
+      console.log = function(message, data, appname, ...additionalArgs){
+        tracker.sendReport('log', message, data);
+        logConsole(message, data, ...additionalArgs);
+      };
+    }
+
+    if(injectWarn){
+      console.warn = function(message, data, appname,  ...additionalArgs){
+        tracker.sendReport('warn', message, data);
+        warnConsole(message, data, ...additionalArgs);
+      };
+    }
+
+    if(injectError){
+      console.error = function(message, data, appname, ...additionalArgs){
+        tracker.sendReport('error', message, data);
+        errorConsole(message, data, ...additionalArgs);
+      };
     }
   }
 }
 
+module.exports = {
+  Tracker
+}

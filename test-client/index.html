@@ -32,7 +32,9 @@
     <script src="./tracker.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function(){
-            Tracker.injectConsole('http://localhost:52005', 'testapp');
+            let app = 'testapp';
+
+            Tracker.injectConsole('http://localhost:52005', app, true, true, true);
 
             let buttons = document.querySelectorAll('button');
 
@@ -45,7 +47,7 @@
                     } else if( index === 2 ) {
                         console.error('Error button was pressed.', new Error('Error button pressed.'));
                     } else if( index === 3 ) {
-                        console.tracker.sendReport('wrong', 'wrong button was pressed.');
+                        console.tracker[app].sendReport('wrong', 'wrong button was pressed.');
                     }
                 })
             })
