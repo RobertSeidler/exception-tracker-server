@@ -77,6 +77,9 @@ class Tracker {
 
   /**
    * Inject a new Tracker object into console global. The tracker for an application, app, is accessable via console.tracker[app].
+   * Overriding the log, warn and error functions is made for a root application,
+   * when there is more then one active. Otherwise use tracker.send(...). Also only one 
+   * application should override these.
    * 
    * @param {string} uri Exception-tracker-Server uri in the Form 'proto://my.server.address.com:port/'.
    * @param {string} app a name under which the Reports are filed in the server.
@@ -86,29 +89,33 @@ class Tracker {
    */
   static injectConsole(uri, app, injectLog = true, injectWarn = true, injectError = true){
     let tracker = new Tracker(uri, app);
+    let otherApps = [];
     if(!console.tracker) console.tracker = {};
+    otherApps = Object.keys(console.tracker);
     console.tracker[app] = tracker;
 
     if(injectLog){
       console.log = function(message, data, appname, ...additionalArgs){
-        tracker.sendReport('log', message, data);
-        logConsole(message, data, ...additionalArgs);
+        if(appname === app) tracker.sendReport('log', message, data);
+        logConsole(message, data, appname, ...additionalArgs);
       };
     }
 
     if(injectWarn){
       console.warn = function(message, data, appname,  ...additionalArgs){
-        tracker.sendReport('warn', message, data);
-        warnConsole(message, data, ...additionalArgs);
+        if(appname === app) tracker.sendReport('warn', message, data);
+        warnConsole(message, data, appname, ...additionalArgs);
       };
     }
 
     if(injectError){
       console.error = function(message, data, appname, ...additionalArgs){
-        tracker.sendReport('error', message, data);
-        errorConsole(message, data, ...additionalArgs);
+        if(appname === app) tracker.sendReport('error', message, data);
+        errorConsole(message, data, appname, ...additionalArgs);
       };
     }
+
+    return tracker;
   }
 }
 

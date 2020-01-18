@@ -100,6 +100,26 @@ function insertRegistrationRoute(db, req, res, next){
     .catch(handlePostError.bind(this, res, next));
 }
 
+function createDataBlobHtml(data, appname){
+  let dataString = JSON.stringify({data: data}, null, 2);
+  let dataSignature = Buffer.from(dataString).toString('base64').slice(0, 5);
+  
+  return `
+    <a class="${dataSignature} app-${appname}" target="_blank"></a>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        let anchorElements = document.querySelectorAll('a.${dataSignature}.app-${appname}');
+        let blob = new Blob([\`${dataString}\`], {type: 'application/json'});
+        let blobUrl = URL.createObjectURL(blob);
+        anchorElements.forEach(anchorElement => {
+          anchorElement.setAttribute('href', blobUrl);
+          anchorElement.innerText = 'link';
+        });
+      });
+    </script>
+  `;
+}
+
 function insertExceptionRoute(db, req, res, next){
   let now = (new Date()).toISOString();
   console.log({...req.body, ...{time: now}});
@@ -109,7 +129,7 @@ function insertExceptionRoute(db, req, res, next){
     req.body.user, 
     req.ip, 
     req.body.message, 
-    req.body.data, 
+    createDataBlobHtml(req.body.data, req.body.application), 
     now
   ])
     .then(() => {
