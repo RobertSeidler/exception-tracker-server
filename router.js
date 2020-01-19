@@ -100,9 +100,10 @@ function insertRegistrationRoute(db, req, res, next){
     .catch(handlePostError.bind(this, res, next));
 }
 
+//TODO: could be refactored into rhtml renderer
 function createDataBlobHtml(data, appname){
-  let dataString = JSON.stringify({data: data}, null, 2);
-  let dataSignature = Buffer.from(dataString).toString('base64').slice(0, 5);
+  let dataString = JSON.stringify({result: data}, null, 2);
+  let dataSignature = Buffer.from(dataString).toString('base64').slice(0, 16);
   
   return `
     <a class="${dataSignature} app-${appname}" target="_blank"></a>
@@ -122,7 +123,8 @@ function createDataBlobHtml(data, appname){
 
 function insertExceptionRoute(db, req, res, next){
   let now = (new Date()).toISOString();
-  console.log({...req.body, ...{time: now}});
+  // console.log({...req.body, ...{time: now}});
+  console.log(req.body.data)
   db.run(insertExcStmt, [
     req.body.application, 
     req.body.severity, 

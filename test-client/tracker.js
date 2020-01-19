@@ -104,14 +104,14 @@ class Tracker {
     if(injectWarn){
       console.warn = function(message, data, appname,  ...additionalArgs){
         if(appname === app) tracker.sendReport('warn', message, data);
-        warnConsole(message, data, appname, ...additionalArgs);
+        warnConsole(message/*, data, appname, ...additionalArgs*/);
       };
     }
 
     if(injectError){
       console.error = function(message, data, appname, ...additionalArgs){
         if(appname === app) tracker.sendReport('error', message, data);
-        errorConsole(message, data, appname, ...additionalArgs);
+        errorConsole(message/*, data, appname, ...additionalArgs*/);
       };
     }
 
