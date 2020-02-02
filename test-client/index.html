@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    
     <style>
         button {
             margin: 10px;
@@ -41,13 +42,16 @@
             buttons.forEach((button, index) => {
                 button.addEventListener('click', function(){
                     if( index === 0 ){
-                        console.log('Button press worked.');
+                        console.log('Button press worked.', undefined, app);
                     } else if( index === 1 ) {
-                        console.warn('Warning: A Button was pressed.', button.innerText);
+                        console.warn('Warning: A Button was pressed.', button.innerText, app);
                     } else if( index === 2 ) {
-                        console.error('Error button was pressed.', new Error('Error button pressed.'));
+                        console.error('Error button was pressed.', {
+                            error: 'Error Button', 
+                            message: 'The Error Button was pressed.'
+                        }, app);
                     } else if( index === 3 ) {
-                        console.tracker[app].sendReport('wrong', 'wrong button was pressed.');
+                        console.tracker[app].sendReport('wrong', 'wrong button was pressed.', app);
                     }
                 })
             })

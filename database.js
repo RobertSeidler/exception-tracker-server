@@ -105,7 +105,7 @@ const seletExceptions = `
     UserToken, 
     UserIP, 
     MessageText, 
-    DataText, 
+    '<a href="/retrieve/report/attachments/' || ExceptionID || '" target="_blank">link</a>' as DataText, 
     Time
   FROM
     Exceptions
@@ -113,6 +113,15 @@ const seletExceptions = `
     UserToken LIKE ? AND
     ApplicationName LIKE ?;
   ;
+`;
+
+const selectReportDataTextStmt = `
+  SELECT
+    DataText
+  FROM
+    Exceptions
+  WHERE
+    ExceptionID = ?;
 `;
 
 async function createDatabase(dbPath){
@@ -153,6 +162,7 @@ module.exports = {
   selectRegistrationColumns,
   selectRegistrations,
   insertExcStmt,
+  selectReportDataTextStmt,
   selectExceptionColumns,
   seletExceptions,
 

@@ -19,6 +19,7 @@ const {
   showRegistrations,
   showExceptions,
   sendResultPage,
+  getReportAttachment,
 } = require('./router.js');
 
 class View {
@@ -37,11 +38,19 @@ const exceptionsView = new View(
   showExceptions,
   undefined
 );
+
 const registrationsView = new View(
   'Registrations', 
   '/retrieve/reg', 
   showRegistrations,
   'register/sidebar'
+);
+
+const reportAttachment = new View(
+  'ReportAttachment',
+  '/retrieve/report/attachments/:reportID',
+  getReportAttachment,
+  undefined,
 );
 
 const app = express();
@@ -73,6 +82,11 @@ function startServer(){
         exceptionsView.view.bind(this, db), 
         sendResultPage.bind(this, exceptionsView.name, exceptionsView.side),
       );
+
+      app.get(
+        reportAttachment.path,
+        reportAttachment.view.bind(this, db),
+      )
 
       app.listen(port, function(){
         console.log(`Server started. listening on ${port}.`);

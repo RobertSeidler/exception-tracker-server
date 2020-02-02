@@ -119,6 +119,11 @@ class Tracker {
   }
 }
 
-module.exports = {
-  Tracker
+
+try{
+  module.exports = {
+    Tracker
+  }
+} catch(err){
+  
 }

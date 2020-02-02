@@ -16,6 +16,7 @@ const {
   selectRegistrations,
   selectRegistrationsForApplication,
   insertExcStmt,
+  selectReportDataTextStmt,
   selectExceptionColumns,
   seletExceptions,
 } = require('./database.js');
@@ -85,6 +86,16 @@ function handlePostError(res, next, error){
     });
 }
 
+function handleGetNotFoundError(res, next, error){
+  console.error(error);
+  res
+    .status(404)
+    .json({
+      error: error.name,
+      message: error.message,
+    })
+}
+
 function insertRegistrationRoute(db, req, res, next){
   let now = (new Date()).toISOString();
   console.log({...req.body, ...{time: now}});
@@ -98,6 +109,14 @@ function insertRegistrationRoute(db, req, res, next){
       res.sendStatus(200);
     })
     .catch(handlePostError.bind(this, res, next));
+}
+
+function getReportAttachment(db, req, res, next){
+  let reportID = req.params.reportID;
+  db.all(selectReportDataTextStmt, [reportID])
+    .catch(handleGetNotFoundError.bind(this, res, next))
+    .then(dataRows => (console.log(dataRows[0].DataText), res.send(JSON.parse(dataRows[0].DataText))))
+    // .catch(err => res.send(err))
 }
 
 //TODO: could be refactored into rhtml renderer
@@ -124,14 +143,14 @@ function createDataBlobHtml(data, appname){
 function insertExceptionRoute(db, req, res, next){
   let now = (new Date()).toISOString();
   // console.log({...req.body, ...{time: now}});
-  console.log(req.body.data)
+  console.log(JSON.stringify({data: req.body.data}))
   db.run(insertExcStmt, [
     req.body.application, 
     req.body.severity, 
     req.body.user, 
     req.ip, 
     req.body.message, 
-    createDataBlobHtml(req.body.data, req.body.application), 
+    JSON.stringify({data: req.body.data}), 
     now
   ])
     .then(() => {
@@ -193,4 +212,6 @@ module.exports = {
   showRegistrations,
   showExceptions,
   sendResultPage,
+  getReportAttachment,
+
 };
